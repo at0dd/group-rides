@@ -164,6 +164,34 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
     return true
   })
 
+  // Use the existing Days enum order to determine day index (preserves the enum's order)
+  const daysArray = Object.values(Days)
+
+  // Convert a TimeOnly-like object to minutes since midnight for easy comparison
+  const minutesSinceMidnight = (time?: { hour?: number; minute?: number } | undefined) => {
+    if (!time || typeof time.hour !== 'number') return Infinity
+    const minute = typeof time.minute === 'number' ? time.minute : 0
+    return time.hour * 60 + minute
+  }
+
+  // For each ride, determine the current season start time (if any) and use it for sorting.
+  // Rides are sorted first by day (using the Days enum order) then by start time (earlier first).
+  // Rides without a current season start time appear after rides with times.
+  ridesList.sort((a, b) => {
+    const dayA = Math.max(0, daysArray.indexOf(a.day as Days))
+    const dayB = Math.max(0, daysArray.indexOf(b.day as Days))
+    if (dayA !== dayB) return dayA - dayB
+
+    const startA = getCurrentSeasonStartTime(a.seasons)
+    const startB = getCurrentSeasonStartTime(b.seasons)
+    const minsA = minutesSinceMidnight(startA)
+    const minsB = minutesSinceMidnight(startB)
+    if (minsA !== minsB) return minsA - minsB
+
+    // Fallback: stable tiebreaker by ride name
+    return a.name.localeCompare(b.name)
+  })
+
   if (ridesList.length === 0) {
     return <p className="mt-6 text-gray-500">No rides found.</p>
   }
