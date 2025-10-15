@@ -172,7 +172,7 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
     <div className="mt-6">
       {ridesList.map((ride) => (
         <div
-          key={ride.name}
+          key={ride.id}
           className="relative grid grid-cols-1 border-b border-b-gray-100 py-10 first:border-t first:border-t-gray-200 max-sm:gap-3 sm:grid-cols-3"
         >
           <div>
@@ -181,11 +181,21 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
             </div>
             <div className="mt-2.5 flex items-center gap-3">
                 <div className="text-sm/5 text-gray-700">
-                {ride.seasons.map(season => (
-                  <div key={`${season.start.month}-${season.start.day}`} className="text-sm/5 text-gray-700">
+                {ride.seasons
+                  .slice()
+                  .sort((a, b) => {
+                    // Order seasons by start month/day to keep rendering stable
+                    if (a.start.month !== b.start.month) return a.start.month - b.start.month
+                    return a.start.day - b.start.day
+                  })
+                  .map((season) => (
+                    <div
+                      key={`${season.start.month}-${season.start.day}-${season.end.month}-${season.end.day}-${season.startTime?.hour ?? 'x'}-${season.startTime?.minute ?? 'x'}`}
+                      className="text-sm/5 text-gray-700"
+                    >
                       {monthShort(season.start.month)} {season.start.day} - {monthShort(season.end.month)} {season.end.day}: {convertTo12Hour(season.startTime)}
                     </div>
-                ))}
+                  ))}
                 </div>
               </div>
           </div>
@@ -194,6 +204,7 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
               <h2 className="text-sm/5 font-medium">{ride.name}</h2>
               <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">{ride.type}</span>
             </div>
+            <p className="text-sm/6">{ride.address}</p>
             <p className="text-sm/6 text-gray-500">{ride.description}</p>
             {ride.website && (
               <div>
@@ -206,12 +217,17 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
                 <div className="mt-2 flex flex-wrap gap-3">
                   {ride.groups.map((group) => (
                     <div key={group.name} className="w-full sm:w-auto border border-gray-100 rounded-md px-3 py-2">
-                      <div className="flex items-center gap-3">
-                        <div className="text-sm/5 font-medium">{group.name}</div>
-                        <div className="text-sm/6 text-gray-600">{group.avgSpeedMPH} mph</div>
-                        {!group.drop && (
-                          <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">No-drop</span>
-                        )}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="text-sm/5 font-medium">{group.name}</div>
+                          {!group.drop && (
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">No-drop</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mt-1 flex items-center gap-3 text-sm/6 text-gray-600">
+                        <div>{group.miles} miles</div>
+                        <div>{group.avgSpeed} mph</div>
                       </div>
                       <div className="mt-1 flex items-center gap-3">
                         {group.garminRoute && (
@@ -219,6 +235,9 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
                         )}
                         {group.stravaRoute && (
                           <Link href={group.stravaRoute} className="text-sm/6 text-blue-600 hover:underline" target="_blank" rel="noreferrer">Strava</Link>
+                        )}
+                        {group.rideWithGPSRoute && (
+                          <Link href={group.rideWithGPSRoute} className="text-sm/6 text-blue-600 hover:underline" target="_blank" rel="noreferrer">Ride with GPS</Link>
                         )}
                       </div>
                     </div>
