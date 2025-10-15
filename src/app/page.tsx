@@ -98,7 +98,7 @@ async function RideType({ selected }: { selected?: string }) {
           {rideTypes.map((rideType) => (
             <MenuItem key={rideType}>
               <Link
-                href={`/?category=${rideType}`}
+                href={`/?type=${rideType}`}
                 data-selected={rideType === selected ? true : undefined}
                 className="group grid grid-cols-[16px_1fr] items-center gap-2 rounded-md px-2 py-1 data-focus:bg-gray-950/5"
               >
@@ -113,9 +113,9 @@ async function RideType({ selected }: { selected?: string }) {
   )
 }
 
-async function Ride({ category }: { category?: string }) {
-  const ridesList = typeof category === 'string'
-    ? rides.filter((r) => r.type === category)
+async function Ride({ type }: { type?: string }) {
+  const ridesList = typeof type === 'string'
+    ? rides.filter((r) => r.type === type)
     : [...rides]
 
   if (ridesList.length === 0) {
@@ -159,7 +159,7 @@ export default async function Home({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const params = await searchParams
-  const type = typeof params.category === 'string' ? params.category : undefined
+  const type = typeof params.type === 'string' ? params.type : undefined
 
   return (
     <main className="overflow-hidden">
@@ -167,7 +167,7 @@ export default async function Home({
       <Header />
       <Container className="mt-16 pb-24">
         <RideType selected={type} />
-        <Ride category={type} />
+        <Ride type={type} />
       </Container>
     </main>
   )
