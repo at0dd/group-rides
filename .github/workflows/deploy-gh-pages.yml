@@ -18,13 +18,13 @@ jobs:
           node-version: '20'
 
       - name: Install
-        run: npm ci
+        run: yarn install
 
       - name: Build and export
         env:
           NEXT_PUBLIC_REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          npm run prepare:gh-pages
+          yarn prepare:gh-pages
 
       - name: Deploy to GitHub Pages (docs folder)
         uses: peaceiris/actions-gh-pages@v4
