@@ -190,8 +190,42 @@ async function Ride({ type, day }: { type?: string; day?: string }) {
               </div>
           </div>
           <div className="sm:col-span-2 sm:max-w-2xl">
-            <h2 className="text-sm/5 font-medium">{ride.name}</h2>
-            <p className="mt-3 text-sm/6 text-gray-500">{ride.description}</p>
+            <div className="flex items-center gap-3">
+              <h2 className="text-sm/5 font-medium">{ride.name}</h2>
+              <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">{ride.type}</span>
+            </div>
+            <p className="text-sm/6 text-gray-500">{ride.description}</p>
+            {ride.website && (
+              <div>
+                <Link href={ride.website} className="text-sm/6 text-blue-600 hover:underline" target="_blank" rel="noreferrer">{ride.website}</Link>
+              </div>
+            )}
+            {ride.groups && ride.groups.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-sm/5 font-medium">Groups</h3>
+                <div className="mt-2 flex flex-wrap gap-3">
+                  {ride.groups.map((group) => (
+                    <div key={group.name} className="w-full sm:w-auto border border-gray-100 rounded-md px-3 py-2">
+                      <div className="flex items-center gap-3">
+                        <div className="text-sm/5 font-medium">{group.name}</div>
+                        <div className="text-sm/6 text-gray-600">{group.avgSpeedMPH} mph</div>
+                        {!group.drop && (
+                          <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">No-drop</span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex items-center gap-3">
+                        {group.garminRoute && (
+                          <Link href={group.garminRoute} className="text-sm/6 text-blue-600 hover:underline" target="_blank" rel="noreferrer">Garmin</Link>
+                        )}
+                        {group.stravaRoute && (
+                          <Link href={group.stravaRoute} className="text-sm/6 text-blue-600 hover:underline" target="_blank" rel="noreferrer">Strava</Link>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       ))}

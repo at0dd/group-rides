@@ -48,8 +48,8 @@ export const rides: Ride[] = [
       { start: { month: 4, day: 1 }, end: { month: 9, day: 30 }, startTime: { hour: 8, minute: 0 } }
     ],
     groups: [
-      { name: 'A', drop: true, avgSpeedMPH: 20, garminRoute: 'https://garmin.example.com/coastal-a', stravaRoute: 'https://strava.example.com/coastal-a' },
-      { name: 'B', drop: false, avgSpeedMPH: 15, garminRoute: 'https://garmin.example.com/coastal-b', stravaRoute: 'https://strava.example.com/coastal-b' },
+      { name: 'A', drop: true, avgSpeedMPH: 20, stravaRoute: 'https://strava.example.com/coastal-a' },
+      { name: 'B', drop: false, avgSpeedMPH: 15, stravaRoute: 'https://strava.example.com/coastal-b' },
     ],
     website: 'https://example.com/rides/coastal-cruiser'
   },
@@ -63,7 +63,7 @@ export const rides: Ride[] = [
       { start: { month: 10, day: 1 }, end: { month: 4, day: 30 }, startTime: { hour: 10, minute: 0 } },
     ],
     groups: [
-      { name: 'Social', drop: false, avgSpeedMPH: 12, garminRoute: 'https://garmin.example.com/social', stravaRoute: 'https://strava.example.com/social' }
+      { name: 'Social', drop: false, avgSpeedMPH: 12, garminRoute: 'https://garmin.example.com/social' }
     ],
     website: 'https://example.com/rides/sunday-social'
   }
