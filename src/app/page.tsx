@@ -1,5 +1,6 @@
 import { Link } from '@/components/link'
 import rides from '@/data/rides'
+import { Days } from '@/types/days'
 import { RideTypes } from '@/types/ridetypes'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import {
@@ -68,7 +69,50 @@ function Header() {
   )
 }
 
-async function RideType({ selected }: { selected?: string }) {
+async function DayFilter({ selectedDay, selectedType }: { selectedDay?: string; selectedType?: string }) {
+  const days = Object.values(Days)
+  if (days.length === 0) return
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <Menu>
+        <MenuButton className="flex items-center justify-between gap-2 font-medium">
+          {days.find((d) => d === selectedDay) || 'All days'}
+          <ChevronUpDownIcon className="size-4 fill-gray-900" />
+        </MenuButton>
+        <MenuItems
+          anchor="bottom start"
+          className="min-w-40 rounded-lg bg-white p-1 shadow-lg ring-1 ring-gray-200 [--anchor-gap:6px] [--anchor-offset:-4px] [--anchor-padding:10px]"
+        >
+          <MenuItem>
+            <Link
+              href={`/${selectedType ? `?type=${selectedType}` : ''}`}
+              data-selected={selectedDay === undefined ? true : undefined}
+              className="group grid grid-cols-[1rem_1fr] items-center gap-2 rounded-md px-2 py-1 data-focus:bg-gray-950/5"
+            >
+              <CheckIcon className="hidden size-4 group-data-selected:block" />
+              <p className="col-start-2 text-sm/6">All days</p>
+            </Link>
+          </MenuItem>
+          {days.map((day) => (
+            <MenuItem key={day}>
+              <Link
+                href={`/?day=${day}${selectedType ? `&type=${selectedType}` : ''}`}
+                data-selected={day === selectedDay ? true : undefined}
+                className="group grid grid-cols-[16px_1fr] items-center gap-2 rounded-md px-2 py-1 data-focus:bg-gray-950/5"
+              >
+                <CheckIcon className="hidden size-4 group-data-selected:block" />
+                <p className="col-start-2 text-sm/6">{day}</p>
+              </Link>
+            </MenuItem>
+          ))}
+        </MenuItems>
+      </Menu>
+    </div>
+  )
+}
+
+async function RideType({ selected, selectedDay }: { selected?: string; selectedDay?: string }) {
   const rideTypes = Object.values(RideTypes)
   if (rideTypes.length === 0) {
     return
@@ -87,7 +131,7 @@ async function RideType({ selected }: { selected?: string }) {
         >
           <MenuItem>
             <Link
-              href="/"
+              href={`/${selectedDay ? `?day=${selectedDay}` : ''}`}
               data-selected={selected === undefined ? true : undefined}
               className="group grid grid-cols-[1rem_1fr] items-center gap-2 rounded-md px-2 py-1 data-focus:bg-gray-950/5"
             >
@@ -98,7 +142,7 @@ async function RideType({ selected }: { selected?: string }) {
           {rideTypes.map((rideType) => (
             <MenuItem key={rideType}>
               <Link
-                href={`/?type=${rideType}`}
+                href={`/?type=${rideType}${selectedDay ? `&day=${selectedDay}` : ''}`}
                 data-selected={rideType === selected ? true : undefined}
                 className="group grid grid-cols-[16px_1fr] items-center gap-2 rounded-md px-2 py-1 data-focus:bg-gray-950/5"
               >
@@ -113,10 +157,12 @@ async function RideType({ selected }: { selected?: string }) {
   )
 }
 
-async function Ride({ type }: { type?: string }) {
-  const ridesList = typeof type === 'string'
-    ? rides.filter((r) => r.type === type)
-    : [...rides]
+async function Ride({ type, day }: { type?: string; day?: string }) {
+  const ridesList = [...rides].filter((r) => {
+    if (typeof type === 'string' && type.length > 0 && r.type !== type) return false
+    if (typeof day === 'string' && day.length > 0 && r.day !== day) return false
+    return true
+  })
 
   if (ridesList.length === 0) {
     return <p className="mt-6 text-gray-500">No rides found.</p>
@@ -160,14 +206,18 @@ export default async function Home({
 }) {
   const params = await searchParams
   const type = typeof params.type === 'string' ? params.type : undefined
+  const day = typeof params.day === 'string' ? params.day : undefined
 
   return (
     <main className="overflow-hidden">
       <GradientBackground />
       <Header />
       <Container className="mt-16 pb-24">
-        <RideType selected={type} />
-        <Ride type={type} />
+        <div className="flex items-center gap-4">
+          <RideType selected={type} selectedDay={day} />
+          <DayFilter selectedDay={day} selectedType={type} />
+        </div>
+        <Ride type={type} day={day} />
       </Container>
     </main>
   )
