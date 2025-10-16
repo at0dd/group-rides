@@ -300,6 +300,7 @@ export default function Home() {
           <RideType selected={selectedType} onSelectType={(t) => setSelectedType(t)} />
           <DayFilter selectedDay={selectedDay} onSelectDay={(d) => setSelectedDay(d)} />
         </div>
+        <p className="mt-1 text-sm/6 text-gray-500">Last Updated: Oct 15, 2025</p>
         <Ride type={selectedType} day={selectedDay} />
       </Container>
     </main>
