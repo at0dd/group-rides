@@ -164,10 +164,14 @@ function RideType({ selected, onSelectType }: { selected?: string; onSelectType:
   )
 }
 
-function Ride({ type, day }: { type?: string; day?: string }) {
+function Ride({ type, day, hideOutOfSeason }: { type?: string; day?: string; hideOutOfSeason?: boolean }) {
   const ridesList = [...rides].filter((r) => {
     if (typeof type === 'string' && type.length > 0 && r.type !== type) return false
     if (typeof day === 'string' && day.length > 0 && r.day !== day) return false
+    if (hideOutOfSeason) {
+      const currentSeasonStart = getCurrentSeasonStartTime(r.seasons)
+      if (typeof currentSeasonStart === 'undefined') return false
+    }
     return true
   })
 
@@ -290,6 +294,8 @@ function Ride({ type, day }: { type?: string; day?: string }) {
 export default function Home() {
   const [selectedType, setSelectedType] = useState<string | undefined>(undefined)
   const [selectedDay, setSelectedDay] = useState<string | undefined>(undefined)
+  // Hide rides that are currently out of season by default
+  const [hideOutOfSeason, setHideOutOfSeason] = useState<boolean>(true)
 
   return (
     <main className="overflow-hidden">
@@ -299,9 +305,20 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <RideType selected={selectedType} onSelectType={(t) => setSelectedType(t)} />
           <DayFilter selectedDay={selectedDay} onSelectDay={(d) => setSelectedDay(d)} />
+          <div className="ml-4 flex items-center gap-2">
+            <label className="inline-flex items-center gap-2 text-sm/6 text-gray-700">
+              <input
+                type="checkbox"
+                checked={hideOutOfSeason}
+                onChange={(e) => setHideOutOfSeason(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              Hide out of season
+            </label>
+          </div>
         </div>
         <p className="mt-1 text-sm/6 text-gray-500">Last Updated: Oct 15, 2025</p>
-        <Ride type={selectedType} day={selectedDay} />
+  <Ride type={selectedType} day={selectedDay} hideOutOfSeason={hideOutOfSeason} />
       </Container>
     </main>
   )
