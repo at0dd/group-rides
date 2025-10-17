@@ -1,7 +1,7 @@
 "use client"
 
 import { Link } from '@/components/link'
-import rides from '@/data/rides'
+import rides, { lastUpdate } from '@/data/rides'
 import { Days } from '@/types/days'
 import { RideTypes } from '@/types/ridetypes'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
@@ -317,7 +317,7 @@ export default function Home() {
             </label>
           </div>
         </div>
-        <p className="mt-1 text-sm/6 text-gray-500">Last Updated: Oct 15, 2025</p>
+        <p className="mt-1 text-sm/6 text-gray-500">Last Updated: {lastUpdate}</p>
   <Ride type={selectedType} day={selectedDay} hideOutOfSeason={hideOutOfSeason} />
       </Container>
     </main>

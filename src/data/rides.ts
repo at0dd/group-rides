@@ -2,6 +2,8 @@ import { Days } from "@/types/days";
 import { Ride } from "@/types/ride";
 import { RideTypes } from "@/types/ridetypes";
 
+export const lastUpdate: string = 'Oct 17, 2025'
+
 export const rides: Ride[] = [
   {
     id: '3-feet-cycling-monday',
@@ -87,6 +89,24 @@ export const rides: Ride[] = [
       { name: 'B', drop: false, miles: '22', avgSpeed: '12-15', garminRoute: 'https://connect.garmin.com/modern/course/335833801' },
     ],
     website: 'https://www.facebook.com/TrekBicycleShawnee/',
+  },
+  {
+    id: 'velo-garage-thursty-thursday',
+    name: 'Velo Garage and Tap House Thursty Thursday Ride',
+    address: '1403 Swift St, North Kansas City, Missouri 64116',
+    description: '**LIGHTS, helmet, and a spare tube are required!** We ask all riders to sign a waiver prior to riding with us, yearly. The spring DST time change marks our yearly roll over. If you\'re new, or if you\'ve signed the waiver before, but not since March 9th 2025, please see the bar to sign the waiver when you arrive.',
+    type: RideTypes.Road,
+    day: Days.Thursday,
+    seasons: [
+      { start: { month: 3, day: 1 }, end: { month: 2, day: 28 }, startTime: { hour: 18, minute: 30 } },
+    ],
+    groups: [
+      { name: 'A', drop: true, miles: '17', avgSpeed: '16', stravaRoute: 'https://www.strava.com/clubs/1075540/group_events/3413221923251675568' },
+      { name: 'B+', drop: true, miles: '19', avgSpeed: '14-15', stravaRoute: 'https://www.strava.com/clubs/1075540/group_events/3413621419115371392' },
+      { name: 'B', drop: false, miles: '14', avgSpeed: '11-13', stravaRoute: 'https://www.strava.com/clubs/1075540/group_events/3413621692605242734' },
+      { name: 'C', drop: false, miles: '10', avgSpeed: '10', stravaRoute: 'https://www.strava.com/clubs/1075540/group_events/3413626158377303788' },
+    ],
+    website: 'https://www.facebook.com/velogaragekc',
   }
 ];
 
